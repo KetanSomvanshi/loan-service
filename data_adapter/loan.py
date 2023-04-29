@@ -69,7 +69,7 @@ class Loan(DBBase, LoanDBBase):
     def update_loan_by_uuid(cls, loan_uuid: str, update_dict: dict) -> int:
         from controller.context_manager import get_db_session
         db = get_db_session()
-        db.query(cls).filter(cls.uuid == loan_uuid, cls.is_deleted.is_(False)).update({cls.status: LoanStatus.PAID})
+        db.query(cls).filter(cls.uuid == loan_uuid, cls.is_deleted.is_(False)).update(update_dict)
         return 0
 
 
