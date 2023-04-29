@@ -45,16 +45,12 @@ def get_db():
             db.rollback()
         else:
             db.commit()
-    except Exception as e:
-        #  rollback the db session if any exception occurs
-        logging.error(e)
-        db.rollback()
     finally:
         #  close the db session
         db.close()
 
 
-class CartDBBase:
+class LoanDBBase:
     """Base class for all db orm models"""
     id = Column(Integer, primary_key=True, unique=True, autoincrement=True)
     uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True)

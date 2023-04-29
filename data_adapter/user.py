@@ -1,11 +1,11 @@
 from sqlalchemy import Column, String
 
 from sqlalchemy.orm import Session
-from data_adapter.db import CartDBBase, DBBase
+from data_adapter.db import LoanDBBase, DBBase
 from models.user import UserModel, UserRole
 
 
-class User(DBBase, CartDBBase):
+class User(DBBase, LoanDBBase):
     __tablename__ = 'user'
 
     first_name = Column(String(255), nullable=False)
