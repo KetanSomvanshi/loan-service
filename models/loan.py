@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum
-from typing import List, Optional
+from typing import List, Optional, Any
 
 from pydantic import BaseModel
 
@@ -24,7 +24,7 @@ class RepaymentInsertModel(BaseModel):
     amount: float
     status: RepaymentStatus = RepaymentStatus.PENDING
     loan_id: int
-    date: str
+    date: Any
 
     def create_db_entity(self):
         from data_adapter.loan import Repayment

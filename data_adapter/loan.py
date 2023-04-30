@@ -25,11 +25,7 @@ class Loan(DBBase, LoanDBBase):
     def __to_model(self) -> LoanModel:
         """converts db orm object to pydantic model"""
         self.date = self.date.strftime("%Y-%m-%d") if not isinstance(self.date, str) else self.date
-        repayments = [repayment.get_model() for repayment in self.repayments] if self.repayments else []
-        self.repayments = []
-        load_data = LoanModel.from_orm(self)
-        load_data.repayments = repayments if repayments else []
-        return load_data
+        return LoanModel.from_orm(self)
 
     @classmethod
     def create_loan(cls, loan) -> LoanModel:
@@ -69,8 +65,7 @@ class Loan(DBBase, LoanDBBase):
     def update_loan_by_uuid(cls, loan_uuid: str, update_dict: dict) -> int:
         from controller.context_manager import get_db_session
         db = get_db_session()
-        db.query(cls).options(contains_eager(cls.repayments)).filter(cls.uuid == loan_uuid,
-                                                                     cls.is_deleted.is_(False)).update(update_dict)
+        db.query(cls).filter(cls.uuid == loan_uuid, cls.is_deleted.is_(False)).update(update_dict)
         db.flush()
         return 0
 
