@@ -62,14 +62,16 @@ class Loan(DBBase, LoanDBBase):
     def get_all_customer_loans(cls, customer_id) -> List[LoanModel]:
         from controller.context_manager import get_db_session
         db = get_db_session()
-        loans = db.query(cls).join(Repayment).filter(cls.customer_id == customer_id,cls.is_deleted.is_(False)).all()
+        loans = db.query(cls).join(Repayment).filter(cls.customer_id == customer_id, cls.is_deleted.is_(False)).all()
         return [loan.__to_model() for loan in loans] if loans else []
 
     @classmethod
     def update_loan_by_uuid(cls, loan_uuid: str, update_dict: dict) -> int:
         from controller.context_manager import get_db_session
         db = get_db_session()
-        db.query(cls).filter(cls.uuid == loan_uuid, cls.is_deleted.is_(False)).update(update_dict)
+        db.query(cls).options(contains_eager(cls.repayments)).filter(cls.uuid == loan_uuid,
+                                                                     cls.is_deleted.is_(False)).update(update_dict)
+        db.flush()
         return 0
 
 
@@ -80,7 +82,6 @@ class Repayment(DBBase, LoanDBBase):
     amount = Column(Float, nullable=False)
     date = Column(String(20), nullable=False)
     status = Column(String(20), nullable=False)
-
 
     def __to_model(self) -> RepaymentModel:
         """converts db orm object to pydantic model"""
